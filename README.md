@@ -10,7 +10,7 @@ This is the final project of EECE 5642 in northeastern university, we are trying
 神经网络的构建，怎么训练，那600个特征值到底能代表什么，视频中的点子能实现多少，下面列出了需要的知识背景，还有一部分没有解决，请自行在互联网搜索并填写url
 
 
-fft能否提取音频中具体的音高或者和弦
+能否用librosa的fft能否提取音频中具体的音高或者和弦
 
 
 特征值可视化：
