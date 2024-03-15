@@ -1,22 +1,17 @@
 # EECE-5642-Data-Virtualization
-This is the final project of EECE 5642 in northeastern university, we are trying to use deep learning network to clasify the music and make a website for virtualization
+This is the final project of EECE 5642 in northeastern university, we are trying to virtualize the music features extracted from ai or traditional math method.
 
 
 
-点子：主要是针对音乐分类的研究，手工或者神经网络提取特征并将特征可视化，目的是对比我们手工提取出的特征和神经网络提取出的特征
-对音频进行fft后可视化，最好能得出一些有用的信息，然后用神经网络提取特征值之后可视化
+点子：主要是针对音乐分类的研究，手工或者神经网络提取特征并将特征可视化，目的是对比我们手工提取出的特征和神经网络提取出的特征，正常情况下人是根据手工提取出的特征来区分歌曲，而人工智能则是根据自己学出来的特征，我们的任务就是把提取出来的特征进行可视化的呈现。
+
 
 难点：
-神经网络的构建，怎么训练，那600个特征值到底能代表什么，视频中的点子能实现多少
+神经网络的构建，怎么训练，那600个特征值到底能代表什么，视频中的点子能实现多少，下面列出了需要的知识背景，还有一部分没有解决，请自行在互联网搜索并填写url
 
-提取音频特征值：
-https://nladuo.github.io/2019/08/31/%E4%BD%BF%E7%94%A8Python%E5%AF%B9%E9%9F%B3%E9%A2%91%E8%BF%9B%E8%A1%8C%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/
 
-音频傅立叶变换：
-https://cjting.me/2021/08/07/fourier-transform-and-audio-visualization/
+fft能否提取音频中具体的音高或者和弦
 
-音频搜索：
-https://zhengqm.github.io/blog/2015/07/23/write-you-a-song-finder.html
 
 特征值可视化：
 https://zhuanlan.zhihu.com/p/144685755
