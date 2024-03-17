@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh-CN">
+ <head> 
+  <meta charset="utf-8"> 
+  <link rel="canonical" href="https://blog.csdn.net/u011478373/article/details/60470166"> 
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+  <meta name="renderer" content="webkit"> 
+  <meta name="force-rendering" content="webkit"> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+  <meta name="report" content="{&quot;pid&quot;: &quot;blog&quot;, &quot;spm&quot;:&quot;1001.2101&quot;}">  
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <link rel="alternate" media="handheld" href="#"> 
+  <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848"> 
+  <meta name="applicable-device" content="pc"> 
+  <link href="https://g.csdnimg.cn/static/logo/favicon32.ico" rel="shortcut icon" type="image/x-icon"> 
+  <title>音乐信号音符/乐谱提取_信号处理实验乐谱识别-CSDN博客</title>  
+  <meta name="keywords" content="信号处理实验乐谱识别"> 
+  <meta name="csdn-baidu-search" content="{&quot;autorun&quot;:true,&quot;install&quot;:true,&quot;keyword&quot;:&quot;信号处理实验乐谱识别&quot;}"> 
+  <meta name="description" content="文章浏览阅读1w次，点赞5次，收藏52次。1 音符提取方法和基本原理本实验使用时频分析的方法完成音乐信号的音符提取。时频分析选择短时傅里叶变换(STFT)完成。其具体方法是将信号用一定长度的窗进行分割成若干帧，对每一帧分别作傅里叶变换，得到它们的频率信息，而每一帧对应的位置表示了该帧所在的时间信息，由此可以实现时频分析的功能。STFT的局限性在于，频率分辨率和时间分辨率的耦合关系。即，频率分辨率的上升会带来时间分辨率的下降，反之亦..._信号处理实验乐谱识别"> 
+  <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/release/blogv2/dist/pc/css/detail_enter-83805c67d5.min.css">  
+  <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/release/blogv2/dist/pc/themesSkin/skin-yellow/skin-yellow-28d34ab5fa.min.css">   
+  <meta name="toolbar" content="{&quot;type&quot;:&quot;0&quot;,&quot;fixModel&quot;:&quot;1&quot;}">   
+  <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/public/sandalstrap/1.4/css/sandalstrap.min.css"> 
+  <style>.MathJax_Display {text-align: center; margin: 1em 0em; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%} .MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%} .MathJax .MJX-monospace {font-family: monospace} .MathJax .MJX-sans-serif {font-family: sans-serif} #MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none} .MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0} .MathJax:focus, body :focus .MathJax {display: inline-table} .MathJax.MathJax_FullWidth {text-align: center; display: table-cell!important; width: 10000em!important} .MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none} img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important} .MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none} .MathJax nobr {white-space: nowrap!important} .MathJax img {display: inline!important; float: none!important} .MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none} .MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden} .MathJax_Processed {display: none!important} .MathJax_ExBox {display: block!important; overflow: hidden; width: 1px; height: 60ex; min-height: 0; max-height: none} .MathJax .MathJax_EmBox {display: block!important; overflow: hidden; width: 1px; height: 60em; min-height: 0; max-height: none} .MathJax_LineBox {display: table!important} .MathJax_LineBox span {display: table-cell!important; width: 10000em!important; min-width: 0; max-width: none; padding: 0; border: 0; margin: 0} .MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)} .MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent} #MathJax_Tooltip * {filter: none; opacity: 1; background: transparent} @font-face {font-family: MathJax_Main; src: url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff?V=2.7.2') format('woff'), url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf?V=2.7.2') format('opentype')} @font-face {font-family: MathJax_Main-bold; src: url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff?V=2.7.2') format('woff'), url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Main-Bold.otf?V=2.7.2') format('opentype')} @font-face {font-family: MathJax_Main-italic; src: url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff?V=2.7.2') format('woff'), url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf?V=2.7.2') format('opentype')} @font-face {font-family: MathJax_Math-italic; src: url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff?V=2.7.2') format('woff'), url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf?V=2.7.2') format('opentype')} @font-face {font-family: MathJax_Caligraphic; src: url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff?V=2.7.2') format('woff'), url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Regular.otf?V=2.7.2') format('opentype')} @font-face {font-family: MathJax_Size1; src: url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff?V=2.7.2') format('woff'), url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size1-Regular.otf?V=2.7.2') format('opentype')} @font-face {font-family: MathJax_Size2; src: url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff?V=2.7.2') format('woff'), url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size2-Regular.otf?V=2.7.2') format('opentype')} @font-face {font-family: MathJax_Size3; src: url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff?V=2.7.2') format('woff'), url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size3-Regular.otf?V=2.7.2') format('opentype')} @font-face {font-family: MathJax_Size4; src: url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff?V=2.7.2') format('woff'), url('https://csdnimg.cn/release/blog_mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size4-Regular.otf?V=2.7.2') format('opentype')} .MathJax .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}</style>   
+ </head> 
+ <body class="nodata " style=""> 
+  <div id="toolbarBox" style="min-height: 48px;"></div>    
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/pc/css/blog_code-01256533b5.min.css"> 
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/chart-3456820cac.css"> 
+  <link rel="stylesheet" href="https://g.csdnimg.cn/lib/swiper/6.0.4/css/swiper.css">   
+  <div class="main_father clearfix  justify-content-center mainfather-concision" style="height:100%;"> 
+   <div class="container clearfix container-concision" id="mainBox" style="width:100%">  
+    <main style="width:100%">  
+     <div class="blog-content-box"> 
+      <div class="article-header-box"> 
+       <div class="article-header"> 
+        <div class="article-title-box"> 
+         <h1 class="title-article" id="articleContentId">音乐信号音符/乐谱提取</h1> 
+        </div> 
+        <div class="article-info-box"> 
+         <div class="up-time">
+          最新推荐文章于&nbsp;2019-04-29 16:37:23&nbsp;发布
+         </div> 
+         <div class="article-bar-top"> 
+          <img class="article-type-img" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2Foriginal.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+          <div class="bar-content"> 
+           <img class="article-vip-img article-heard-img" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FidentityVip.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+           <span class="article-vip-text vip_article"> VIP文章</span> 
+           <a class="follow-nickName " href="https://blog.csdn.net/u011478373" target="_blank" rel="noopener" title="KevinLeeee">KevinLeeee</a> 
+           <img class="article-time-img article-heard-img" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnewCurrentTime2.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+           <span class="time blog-postTime" data-time="2017-03-05 19:10:53">最新推荐文章于&nbsp;2019-04-29 16:37:23&nbsp;发布</span> 
+           <div class="read-count-box"> 
+            <img class="article-read-img article-heard-img" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FarticleReadEyes2.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+            <span class="read-count">阅读量1w</span> 
+            <a id="blog_detail_zk_collection" class="un-collection" data-report-click="{&quot;mod&quot;:&quot;popu_823&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4232&quot;,&quot;ab&quot;:&quot;new&quot;}"> <img class="article-collect-img article-heard-img un-collect-status isdefault" style="display:inline-block" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FtobarCollect2.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> <img class="article-collect-img article-heard-img collect-status isactive" style="display:none" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FtobarCollectionActive2.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> <span class="name">收藏</span> <span class="get-collection"> 52 </span> </a> 
+            <div class="read-count-box is-like"> 
+             <img class="article-read-img article-heard-img" style="display:none" id="is-like-imgactive-new" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnewHeart2023Active.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+             <img class="article-read-img article-heard-img" style="display:block" id="is-like-img-new" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnewHeart2023Black.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+             <span class="read-count" id="blog-digg-num">点赞数 5 </span> 
+            </div> 
+           </div> 
+          </div> 
+         </div> 
+         <div class="blog-tags-box"> 
+          <div class="tags-box artic-tag-box"> 
+           <span class="label">分类专栏：</span> 
+           <a class="tag-link" href="https://blog.csdn.net/u011478373/category_6767547.html" target="_blank" rel="noopener">STFT时频分析应用</a> 
+           <span class="label">文章标签：</span> 
+           <a rel="noopener" data-report-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;STFT时频分析应用&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;STFT时频分析应用\&quot;}&quot;}" class="tag-link" href="https://so.csdn.net/so/search/s.do?q=STFT%E6%97%B6%E9%A2%91%E5%88%86%E6%9E%90%E5%BA%94%E7%94%A8&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank">STFT时频分析应用</a> 
+           <a rel="noopener" data-report-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;音乐声学&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;音乐声学\&quot;}&quot;}" class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E9%9F%B3%E4%B9%90%E5%A3%B0%E5%AD%A6&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank">音乐声学</a> 
+           <a rel="noopener" data-report-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;音频信号处理&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;音频信号处理\&quot;}&quot;}" class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E9%9F%B3%E9%A2%91%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank">音频信号处理</a> 
+          </div> 
+         </div> 
+         <div class="slide-content-box"> 
+          <div class="article-copyright"> 
+           <div class="creativecommons">
+             版权声明：本文为博主原创文章，遵循
+            <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener"> CC 4.0 BY-SA </a>版权协议，转载请附上原文出处链接和本声明。 
+           </div> 
+           <div class="article-source-link">
+             本文链接：
+            <a href="https://blog.csdn.net/u011478373/article/details/60470166" target="_blank">https://blog.csdn.net/u011478373/article/details/60470166</a> 
+           </div> 
+          </div> 
+         </div> 
+         <div class="operating"> 
+          <a class="href-article-edit slide-toggle">版权</a> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+      <div id="blogHuaweiyunAdvert"></div> 
+      <article class="baidu_pl"> 
+       <div id="article_content" class="article_content clearfix"> 
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css"> 
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-044f2cf1dc.css"> 
+        <div id="content_views" class="htmledit_views"> 
+         <p><strong>1 音符提取方法和基本原理</strong></p> 
+         <p>本实验使用时频分析的方法完成音乐信号的音符提取。时频分析选择短时傅里叶变换(STFT)完成。其具体方法是将信号用一定长度的窗进行分割成若干帧，对每一帧分别作傅里叶变换，得到它们的频率信息，而每一帧对应的位置表示了该帧所在的时间信息，由此可以实现时频分析的功能。</p> 
+         <p>STFT的局限性在于，频率分辨率和时间分辨率的耦合关系。即，频率分辨率的上升会带来时间分辨率的下降，反之亦然，两者不能同时达到最高，分辨率取决于窗口长度。针对这一问题，本次实验需要设定合适的窗口长度，使之能够尽量同时满足频率和时间分辨率的要求。</p> 
+         <p>对需要处理的音乐信号特征进行分析可以得到，该信号为时长为10s，采样频率为8kHz的双声道信号，两个声道的信号差别不大。针对音乐的节奏和采样频率，可以使用窗口长度为1000的矩形窗，即将信号分为80帧，每帧信号为125ms。然后将每帧信号做fft，再求模平方得到功率谱。求功率谱中能量最大值所对应的频率点，该频率即为这一时间段对应的住频率，由于每帧信号时间足够短，可以认为该频率对应的音符为这一时间段的主要音符，将其提取出即可。</p> 
+         <p>在得到了各个时刻主频之后，要利用音符音高对应的基频获得主频对应的音符。由于实验者对吉他一窍不通，对钢琴有一定的涉猎，本实验以钢琴琴键为准提取音符。钢琴的中央C基频约为261.63Hz，唱“do”。根据国际标准，相邻的半个音（即钢琴相邻键）的基频相差2^(1/12)倍。由此标准可以通过将获得的主频和261.63求比例，再求以2^(1/12)为底的对数，获得其对应音符与中央C相差的键数，正值为更高，负值为更低。</p> 
+         <p><span style="color:#FF0000;">钢琴一个八度的</span><span style="color:#FF0000;">12</span><span style="color:#FF0000;">个琴键本别可以表示为如下形式：</span></p> 
+         <p><span style="color:#FF0000;">Do&nbsp; Do#&nbsp; Re&nbsp; Re#&nbsp; Mi&nbsp; Fa&nbsp; Fa#&nbsp; Sol&nbsp; Sol#&nbsp; La&nbsp; La#&nbsp; Si</span></p> 
+         <p><span style="color:#FF0000;">其中</span><span style="color:#FF0000;">“#”</span><span style="color:#FF0000;">表示比该音符高半个音的黑键。</span></p> 
+         <p><span style="color:#FF0000;">为了表示不同八度的音符，用在该音符后面紧跟的数字表示。正数表示高若干八度，负数表示低若干八度。音符持续的时间用“</span><span style="color:#FF0000;">*</span><span style="color:#FF0000;">”后面的数字表示，数字代表持续的帧数，在时间上，即为该数字乘以</span><span style="color:#FF0000;">125ms</span><span style="color:#FF0000;">。</span></p> 
+         <p><span style="color:#FF0000;">用该方法表示的钢琴音符谱较为完备。</span></p> 
+         <p><strong>2实验结果</strong></p> 
+         <p>本次实验获得的每帧主频以及从信号中提取的音乐音符如下：</p> 
+         <p>STEP 8:</p> 
+         <p>the main frequency of each frame are:</p> 
+         <p>[96.0, 1680.0, 376.0, 376.0, 1776.0, 1776.0, 888.0, 1776.0, 888.0,1680.0, 1680.0, 1680.0, 1864.0, 888.0, 888.0, 1656.0, 888.0, 368.0, 376.0,368.0, 368.0, 376.0, 296.0, 296.0, 888.0, 296.0, 296.0, 296.0, 1752.0, 888.0,328.0, 328.0, 1680.0, 1680.0, 1680.0, 1680.0, 1672.0, 1856.0, 440.0, 448.0,1672.0, 1680.0, 1680.0, 1680.0, 840.0, 840.0, 376.0, 440.0, 376.0, 376.0,1680.0, 1680.0, 1680.0, 1680.0, 840.0, 376.0, 376.0, 376.0, 376.0, 1680.0,1680.0, 1680.0, 464.0, 464.0, 1680.0, 1856.0, 416.0, 440.0, 336.0, 336.0,336.0, 328.0, 336.0, 440.0, 440.0, 880.0, 440.0, 840.0, 840.0, 280.0]</p> 
+         <p>the notes are:</p> 
+         <p>Sol-2*1 Sol#2*1 Fa#0*2 La2*5 Sol#2*3 La#2*1 La1*2 Sol#2*1 La1*1Fa#0*5 Re0*2 La1*1 Re0*3 La2*2 Mi0*2 Sol#2*5 La#2*1 La0*2 Sol#2*6 Fa#0*1 La0*1Fa#0*2 Sol#2*5 Fa#0*4 Sol#2*3 La#0*2 Sol#2*1 La#2*1 Sol#0*1 La0*1 Mi0*5 La0*4Sol#1*2 Do#0*1</p> 
+         <p>各帧主频以及时频分析的功率谱图如下：</p> 
+         <p><img alt="" class="has" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fimg-blog.csdn.net%2F20170305191300466%3Fwatermark%2F2%2Ftext%2FaHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMTQ3ODM3Mw%3D%3D%2Ffont%2F5a6L5L2T%2Ffontsize%2F400%2Ffill%2FI0JBQkFCMA%3D%3D%2Fdissolve%2F70%2Fgravity%2FCenter&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166"></p> 
+         <p>&nbsp;</p> 
+         <p>本次实验获得的音符与音乐的实际音符有差别。主要原因是在同一时刻存在多个音符，而主旋律的音符能量未必是最大的，另外，STFT时频分析方法的时频分辨率局限性使得对音符基频的时域和频域提取都存在着误差。</p> 
+         <p><strong>3代码（python）</strong></p> 
+         <p># TO DO: analyze the wave signal, extract its notes<br> #-----------------------------------------<br> windowsize=1000<br> halfwindowsize=500<br> numframe=80<br> fs=8000<br> basicfreq=[0 for x in range(0,numframe)] #the main frequency of each frame<br> basicfreq1=[0 for x in range(0,numframe)]<br> basicfreq2=[0 for x in range(0,numframe)]<br> nomalizedbasicfreq=[0 for x in range(0,numframe)] #nomalize the main frequency of each frame according to the standard notes basic frequency<br> orignotes=[0 for x in range(0,numframe)] #the ratio of each main frequency with the central C 261,63 Hz by log<br> notes=[0 for x in range(0,numframe)] #the notes represented by number<br> notes1=[0 for x in range(0,numframe)]<br> notes2=[0 for x in range(0,numframe)]<br> ratio=math.pow(2,1/12) #the basic ratio between the neighbour notes<br> bufferwave=[[0 for x in range(0,windowsize)] for frame in range(0,numframe)] #the signal for each frame<br> bufferwavefft=[[0 for x in range(0,windowsize)] for frame in range(0,numframe)] #fft each frame<br> powerbufferwavefft=[[0 for x in range(0,halfwindowsize)] for frame in range(0,numframe)] #get the power of each frame<br> #get the dictionary for the basic 12 note in one octave<br> dictnotes={0: 'Do', 1: 'Do#', 2: 'Re', 3: 'Re#', 4: 'Mi', 5: 'Fa', 6: 'Fa#', 7: 'Sol', 8: 'Sol#', 9: 'La', 10: 'La#', 11: 'Si'}<br> notesbywords=[]<br> #the time noted by the number of frames for each note<br> notestime=[]<br> notestime1=[]<br> notestime2=[]<br> ampli=[]<br> ampli1=[]<br> ampli2=[]<br> for i in range(0,numframe):<br> bufferwave[i]=wave_data[0][i*windowsize:i*windowsize+windowsize]<br> bufferwavefft[i]=np.fft.fft(bufferwave[i])<br> w8=0<br> powerw8=0<br> for w in range(10,halfwindowsize): #to eliminate the low frequence noice search from 80 Hz<br> powerbufferwavefft[i][w]=math.pow(abs(bufferwavefft[i][w]),2)<br> if powerbufferwavefft[i][w]&gt;powerw8:<br> powerw8=powerbufferwavefft[i][w]<br> w8=w*fs/windowsize<br> ww8=w<br> basicfreq[i] = w8<br> orignotes[i] = round(math.log(w8 / 261.63, ratio))<br> note = round(math.log(w8 / 261.63, ratio)) &nbsp;# get the ratio with 261.63 Hz by log<br> nomalizedbasicfreq[i] = ratio ** note * 261.63<br> ampli.append(powerw8**(1/2))<br> for x in range(ww8-1,ww8+2):<br> powerbufferwavefft[i][x]=0<br> if note &gt;= 0:<br> if note &lt; 12:<br> k = 0 &nbsp;# get the octave range of this certain note<br> notes[i] = note<br> else:<br> k = 0<br> while note &gt;= 12:<br> k = k + 1<br> note = note - 12<br> notes[i] = note<br> else:<br> k = 0<br> while note &lt; 0:<br> k = k - 1<br> note = note + 12<br> notes[i] = note<br> if i == 0:<br> notesbywords.append(dictnotes[notes[i]] + '%d' % k)<br> k = 0<br> length = 1 &nbsp;# get the number of frame this certain note remains<br> else:<br> if notes[i - 1] != notes[i]:<br> notesbywords.append('*%d ' % length + dictnotes[notes[i]] + '%d' % k)<br> notestime.append(length)<br> k = 0<br> length = 1<br> else:<br> length = length + 1<br> powerw8=0<br> for w in range(10, halfwindowsize): &nbsp;# to eliminate the low frequence noice search from 80 Hz<br> #powerbufferwavefft[i][w] = math.pow(abs(bufferwavefft[i][w]), 2)<br> if powerbufferwavefft[i][w] &gt; powerw8:<br> powerw8 = powerbufferwavefft[i][w]<br> w8 = w * fs / windowsize<br> ww8 = w<br> note1 = round(math.log(w8 / 261.63, ratio)) &nbsp;# get the ratio with 261.63 Hz by log<br> basicfreq1[i] = ratio ** note1 * 261.63<br> ampli1.append(powerw8 ** (1 / 2))<br> for x in range(ww8 - 1, ww8 + 2):<br> powerbufferwavefft[i][x] = 0<br> if note1 &gt;= 0:<br> if note1 &lt; 12:<br> k = 0 &nbsp;# get the octave range of this certain note<br> notes1[i] = note1<br> else:<br> k = 0<br> while note1 &gt;= 12:<br> k = k + 1<br> note1 = note1 - 12<br> notes1[i] = note1<br> else:<br> k = 0<br> while note1 &lt; 0:<br> k = k - 1<br> note1 = note1 + 12<br> notes1[i] = note1<br> if i == 0:<br> notesbywords.append(dictnotes[notes1[i]] + '%d' % k)<br> k = 0<br> length1 = 1 &nbsp;# get the number of frame this certain note remains<br> else:<br> if notes1[i - 1] != notes1[i]:<br> notesbywords.append('*%d ' % length + dictnotes[notes1[i]] + '%d' % k)<br> notestime1.append(length1)<br> k = 0<br> length1 = 1<br> else:<br> length1 = length1 + 1<br> powerw8=0<br> for w in range(10, halfwindowsize): &nbsp;# to eliminate the low frequence noice search from 80 Hz<br> #powerbufferwavefft[i][w] = math.pow(abs(bufferwavefft[i][w]), 2)<br> if powerbufferwavefft[i][w] &gt; powerw8:<br> powerw8 = powerbufferwavefft[i][w]<br> w8 = w * fs / windowsize<br> note2=round(math.log(w8/261.63,ratio)) #get the ratio with 261.63 Hz by log<br> basicfreq2[i] = ratio**note2*261.63<br> ampli2.append(powerw8 ** (1 / 2))<br> if note2&gt;=0:<br> if note2&lt;12:<br> k = 0 #get the octave range of this certain note<br> notes2[i]=note2<br> else:<br> k=0<br> while note2&gt;=12:<br> k=k+1<br> note2=note2-12<br> notes2[i]=note2<br> else:<br> k=0<br> while note2&lt;0:<br> k=k-1<br> note2=note2+12<br> notes2[i]=note2<br> if i==0:<br> notesbywords.append(dictnotes[notes2[i]]+'%d'%k)<br> k = 0<br> length2 = 1 #get the number of frame this certain note remains<br> else:<br> if notes2[i-1]!=notes2[i]:<br> notesbywords.append('*%d '%length+dictnotes[notes2[i]]+'%d'%k)<br> notestime2.append(length2)<br> k = 0<br> length2 = 1<br> else:<br> length2=length2+1<br> notesbywords.append('*%d' % length)<br> notestime.append(length)<br> notestime1.append(length1)<br> notestime2.append(length2)<br> music=('').join(notesbywords)<br> print("STEP 8:")<br> print("the main frequency of each frame are:")<br> print(basicfreq) #print the basic frequency of the notes<br> print("the notes are:")<br> print(music) #print the notes using the rule described in the report<br> print(notestime)<br> print(notestime1)<br> print(notestime2)<br> print(ampli)<br> print(ampli1)<br> print(ampli2)<br> #i am afraid that you can't read the notes if you don't read chapter 2.8 of my report<br> plt.figure()<br> plt.subplot(211)<br> plt.plot(basicfreq)<br> plt.title(r'STEP 8:analyze the wave signal, extract its notes:')<br> plt.subplot(212)<br> plt.specgram(wave_data[0],Fs=1000)<br> plt.title(r'specgram: 1000 sample for one frame, 80 frames in total')</p> 
+         <pre style="max-height:100%">&nbsp;</pre> 
+        </div> 
+       </div> 
+       <div id="treeSkill"></div> 
+      </article>  
+     </div> 
+     <div class="directory-boxshadow-dialog" style="display:none;"> 
+      <div class="directory-boxshadow-dialog-box"> 
+      </div> 
+      <div class="vip-limited-time-offer-box"> 
+       <div class="vip-limited-time-offer-content"> 
+        <img class="limited-img" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2Fvip-limited-close.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166"> 
+        <div class="limited-box"> 
+         <span class="limited-num"></span> 
+         <span class="limited-quan"> 优惠劵</span> 
+        </div> 
+        <div class="limited-time-box"> 
+         <span class="time-hour"></span> 
+         <span class="time-minite"></span> 
+         <span class="time-second"></span> 
+        </div> 
+        <a class="limited-time-btn" href="https://mall.csdn.net/vip" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.9621&quot;}" data-report-query="spm=1001.2101.3001.9621"></a> 
+       </div> 
+      </div> 
+     </div>     
+     <a id="commentBox" name="commentBox"></a>      
+     <div id="recommendNps" class="recommend-nps-box common-nps-box"> 
+      <h3 class="aside-title">“相关推荐”对你有帮助么？</h3> 
+      <div class="aside-content"> 
+       <ul class="newnps-list"> 
+        <li class="newnps-item" data-type="非常没帮助"> 
+         <div class="newnps-img-box"> 
+          <img class="newnps-img active" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeel1.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+          <img class="newnps-img default" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeelGrey1.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+         </div> 
+         <div class="newnps-text">
+          非常没帮助
+         </div> </li> 
+        <li class="newnps-item" data-type="没帮助"> 
+         <div class="newnps-img-box"> 
+          <img class="newnps-img active" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeel2.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+          <img class="newnps-img default" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeelGrey2.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+         </div> 
+         <div class="newnps-text">
+          没帮助
+         </div> </li> 
+        <li class="newnps-item" data-type="一般"> 
+         <div class="newnps-img-box"> 
+          <img class="newnps-img active" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeel3.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+          <img class="newnps-img default" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeelGrey3.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+         </div> 
+         <div class="newnps-text">
+          一般
+         </div> </li> 
+        <li class="newnps-item" data-type="有帮助"> 
+         <div class="newnps-img-box"> 
+          <img class="newnps-img active" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeel4.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+          <img class="newnps-img default" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeelGrey4.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+         </div> 
+         <div class="newnps-text">
+          有帮助
+         </div> </li> 
+        <li class="newnps-item" data-type="非常有帮助"> 
+         <div class="newnps-img-box"> 
+          <img class="newnps-img active" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeel5.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+          <img class="newnps-img default" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FnpsFeelGrey5.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+         </div> 
+         <div class="newnps-text">
+          非常有帮助
+         </div> </li> 
+       </ul> 
+       <div class="newnps-form-box"> 
+        <div class="newnps-form"> 
+         <input type="text" placeholder="请输入建议或反馈后点击提交" class="newnps-input"> 
+         <span class="newnps-btn">提交</span> 
+        </div> 
+       </div> 
+      </div> 
+     </div>   
+    </main>     
+   </div> 
+   <div class="recommend-right align-items-stretch clearfix" id="rightAside" data-type="recommend"> 
+    <aside class="recommend-right_aside"> 
+     <div id="recommend-right"> 
+      <div class="flex-column aside-box groupfile" id="groupfile"> 
+       <div class="groupfile-div"> 
+        <h3 class="aside-title">目录</h3> 
+        <div class="align-items-stretch group_item"> 
+         <div class="pos-box"> 
+          <div class="scroll-box"> 
+           <div class="toc-box"></div> 
+          </div> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+      <div class="aside-box kind_person d-flex flex-column"> 
+       <h3 class="aside-title">分类专栏</h3> 
+       <div class="align-items-stretch kindof_item" id="kind_person_column"> 
+        <div class="aside-content"> 
+         <ul> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/u011478373/category_6758931.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/u011478373/category_6758931.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fimg-blog.csdnimg.cn%2F20201014180756927.png%3Fx-oss-process%3Dimage%2Fresize%2Cm_fixed%2Ch_64%2Cw_64&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> C语言基本问题 </span> </a> <span class="special-column-num">2篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/u011478373/category_6759029.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/u011478373/category_6759029.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fimg-blog.csdnimg.cn%2F20201014180756928.png%3Fx-oss-process%3Dimage%2Fresize%2Cm_fixed%2Ch_64%2Cw_64&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> ANC </span> </a> <span class="special-column-num">2篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/u011478373/category_6767547.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/u011478373/category_6767547.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fimg-blog.csdnimg.cn%2F20201014180756930.png%3Fx-oss-process%3Dimage%2Fresize%2Cm_fixed%2Ch_64%2Cw_64&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> STFT时频分析应用 </span> </a> <span class="special-column-num">1篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/u011478373/category_6767575.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/u011478373/category_6767575.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fimg-blog.csdnimg.cn%2F20201014180756780.png%3Fx-oss-process%3Dimage%2Fresize%2Cm_fixed%2Ch_64%2Cw_64&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 钢琴音乐合成 </span> </a> <span class="special-column-num">1篇</span> </li> 
+         </ul> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </aside> 
+   </div> 
+   <div class="recommend-right1  align-items-stretch clearfix" id="rightAsideConcision" data-type="recommend"> 
+    <aside class="recommend-right_aside"> 
+     <div id="recommend-right-concision"> 
+      <div class="flex-column aside-box groupfile" id="groupfileConcision"> 
+       <div class="groupfile-div1"> 
+        <h3 class="aside-title">目录</h3> 
+        <div class="align-items-stretch group_item"> 
+         <div class="pos-box"> 
+          <div class="scroll-box"> 
+           <div class="toc-box"></div> 
+          </div> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </aside> 
+   </div> 
+  </div> 
+  <div class="mask-dark"></div> 
+  <div class="skin-boxshadow"></div> 
+  <div class="directory-boxshadow"></div> 
+  <div class="comment-side-box-shadow comment-side-tit-close" id="commentSideBoxshadow"> 
+   <div class="comment-side-content"> 
+    <div class="comment-side-tit"> 
+     <div class="comment-side-tit-count">
+      评论&nbsp;
+      <span class="count">5</span>
+     </div> 
+     <img class="comment-side-tit-close" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FcloseBt.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166">
+    </div>  
+    <div id="pcFlodCommentSideBox" class="pc-flodcomment-sidebox"> 
+     <div class="comment-fold-tit">
+      <span id="lookUnFlodComment" class="back"><img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FcommentArrowLeftWhite.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""></span>被折叠的&nbsp;
+      <span class="count"></span>&nbsp;条评论 
+      <a href="https://blogdev.blog.csdn.net/article/details/122245662" class="tip" target="_blank">为什么被折叠?</a> 
+      <a href="https://bbs.csdn.net/forums/FreeZone" class="park" target="_blank"> <img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FiconPark.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166">到【灌水乐园】发言</a> 
+     </div> 
+     <div class="comment-fold-content"></div> 
+     <div id="lookBadComment" class="look-bad-comment side-look-comment"> 
+      <a class="look-more-comment">查看更多评论<img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FcommentArrowDownWhite.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""></a> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="comment-rewarddialog-box"> 
+    <div class="form-box"> 
+     <div class="title-box">
+       添加红包 
+      <a class="btn-form-close"></a> 
+     </div> 
+     <form id="commentRewardForm"> 
+      <div class="ipt-box"> 
+       <label for="txtName">祝福语</label> 
+       <div class="ipt-btn-box"> 
+        <input type="text" name="name" id="txtName" autocomplete="off" maxlength="50"> 
+        <a class="btn-ipt btn-random"></a> 
+       </div> 
+       <p class="notice">请填写红包祝福语或标题</p> 
+      </div> 
+      <div class="ipt-box"> 
+       <label for="txtSendAmount">红包数量</label> 
+       <div class="ipt-txt-box"> 
+        <input type="text" name="sendAmount" maxlength="4" id="txtSendAmount" placeholder="请填写红包数量(最小10个)" autocomplete="off"> 
+        <span class="after-txt">个</span> 
+       </div> 
+       <p class="notice">红包个数最小为10个</p> 
+      </div> 
+      <div class="ipt-box"> 
+       <label for="txtMoney">红包总金额</label> 
+       <div class="ipt-txt-box error"> 
+        <input type="text" name="money" maxlength="5" id="txtMoney" placeholder="请填写总金额(最低5元)" autocomplete="off"> 
+        <span class="after-txt">元</span> 
+       </div> 
+       <p class="notice">红包金额最低5元</p> 
+      </div> 
+      <div class="balance-info-box"> 
+       <label>余额支付</label> 
+       <div class="balance-info">
+         当前余额
+        <span class="balance">3.43</span>元 
+        <a href="https://i.csdn.net/#/wallet/balance/recharge" class="link-charge" target="_blank">前往充值 &gt;</a> 
+       </div> 
+      </div> 
+      <div class="opt-box"> 
+       <div class="pay-info">
+         需支付：
+        <span class="price">10.00</span>元 
+       </div> 
+       <button type="button" class="ml-auto btn-cancel">取消</button> 
+       <button type="button" class="ml8 btn-submit" disabled="true">确定</button> 
+      </div> 
+     </form> 
+    </div> 
+   </div> 
+   <div class="rr-guide-box"> 
+    <div class="rr-first-box"> 
+     <img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FguideRedReward02.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+     <button class="btn-guide-known next">下一步</button> 
+    </div> 
+    <div class="rr-second-box"> 
+     <img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2FguideRedReward03.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+     <button class="btn-guide-known known">知道了</button> 
+    </div> 
+   </div> 
+  </div> 
+  <div class="redEnvolope" id="redEnvolope"> 
+   <div class="env-box"> 
+    <div class="env-container"> 
+     <div class="pre-open" id="preOpen"> 
+      <div class="top"> 
+       <header> 
+        <img class="clearTpaErr" :src="redpacketAuthor.avatar" alt="" src="https://ziquyun.com/main/csdn/img?url=&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166"> 
+        <div class="author">
+         成就一亿技术人!
+        </div> 
+       </header> 
+       <div class="bot-icon"></div> 
+      </div> 
+      <footer> 
+       <div class="red-openbtn open-start"></div> 
+       <div class="tip">
+         领取后你会自动成为博主和红包主的粉丝 
+        <a class="rule" target="_blank">规则</a> 
+       </div> 
+      </footer> 
+     </div> 
+     <div class="opened" id="opened"> 
+      <div class="bot-icon"> 
+       <header> 
+        <a class="creatorUrl" href="" target="_blank"> <img class="clearTpaErr" src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fprofile-avatar.csdnimg.cn%2Fdefault.jpg%212&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> </a> 
+        <div class="author"> 
+         <div class="tt">
+          hope_wisdom
+         </div> 发出的红包 
+        </div> 
+       </header> 
+      </div> 
+      <div class="receive-box"> 
+       <header></header> 
+       <div class="receive-list"> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+    <div class="close-btn"></div> 
+   </div> 
+  </div> 
+  <div class="pay-code"> 
+   <div class="pay-money">
+    实付
+    <span class="pay-money-span" data-nowprice="" data-oldprice="">元</span>
+   </div> 
+   <div class="content-blance">
+    <a class="blance-bt" href="javascript:;">使用余额支付</a>
+   </div> 
+   <div class="content-code"> 
+    <div id="payCode" data-id=""> 
+     <div class="renovate"> 
+      <img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2Fpay-time-out.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166"> 
+      <span>点击重新获取</span> 
+     </div> 
+    </div> 
+    <div class="pay-style">
+     <span><img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2Fweixin.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166"></span>
+     <span><img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2Fzhifubao.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166"></span>
+     <span><img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2Fjingdong.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166"></span>
+     <span class="text">扫码支付</span>
+    </div> 
+   </div> 
+   <div class="bt-close"> 
+    <svg t="1567152543821" class="icon" viewbox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10924" xmlns:xlink="http://www.w3.org/1999/xlink" width="12" height="12"> 
+     <defs> 
+      <style type="text/css"></style> 
+     </defs> 
+     <path d="M512 438.378667L806.506667 143.893333a52.032 52.032 0 1 1 73.6 73.621334L585.621333 512l294.485334 294.485333a52.074667 52.074667 0 0 1-73.6 73.642667L512 585.621333 217.514667 880.128a52.053333 52.053333 0 1 1-73.621334-73.642667L438.378667 512 143.893333 217.514667a52.053333 52.053333 0 1 1 73.621334-73.621334L512 438.378667z" fill="" p-id="10925"></path> 
+    </svg> 
+   </div> 
+   <div class="pay-balance"> 
+    <input type="radio" class="pay-code-radio" data-type="details"> 
+    <span class="span">钱包余额</span> 
+    <span class="balance" style="color:#FC5531;font-size:14px;">0</span> 
+    <div class="pay-code-tile"> 
+     <img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2Fpay-help.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""> 
+     <div class="pay-code-content"> 
+      <div class="span"> 
+       <p class="title">抵扣说明：</p> 
+       <p> 1.余额是钱包充值的虚拟货币，按照1:1的比例进行支付金额的抵扣。<br> 2.余额无法直接购买下载，可以购买VIP、付费专栏及课程。</p> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <a class="pay-balance-con" href="https://i.csdn.net/#/wallet/balance/recharge" target="_blank"><img src="https://ziquyun.com/main/csdn/img?url=https%3A%2F%2Fcsdnimg.cn%2Frelease%2Fblogv2%2Fdist%2Fpc%2Fimg%2Frecharge.png&amp;rfUrl=https%3A%2F%2Fblog.csdn.net%2Fu011478373%2Farticle%2Fdetails%2F60470166" alt=""><span>余额充值</span></a> 
+  </div> 
+  <div style="display:none;">  
+  </div> 
+  <div class="keyword-dec-box" id="keywordDecBox"></div>  
+  <!-- 富文本柱状图  --> 
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/chart/chart.css">       
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/codesnippet/lib/highlight/styles/atom-one-light.css">                 
+ </body>
+</html>
