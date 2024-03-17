@@ -22,7 +22,9 @@ https://librosa.org/doc/latest/tutorial.html
 使用librosa提取歌曲的特征和可视化：
 https://blog.csdn.net/ahong286286/article/details/90170749?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-90170749-blog-89677759.235^v43^pc_blog_bottom_relevance_base7&spm=1001.2101.3001.4242.1&utm_relevant_index=3
 
-音频分析fft效果
-release.rar
-用FFT实现音频分析 讲的比较清楚
+音频分析fft效果: release.rar
+
+用FFT实现音频分析 讲的比较清楚:
 https://zhuanlan.zhihu.com/p/363561594?utm_id=0
+
+音乐信号音符/乐谱提取
